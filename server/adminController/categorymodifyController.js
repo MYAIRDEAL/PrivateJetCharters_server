@@ -1,6 +1,6 @@
 const Categorymodify = require("../models/Categorymodify");
 const Subcategory = require("../models/Subcategory");
-const Type=require('../models/Type')
+const Type = require("../models/Type");
 const cloudinary = require("cloudinary").v2;
 /**
  *  Cloudinary configuration
@@ -31,7 +31,7 @@ exports.getModifyCategories = async (req, res) => {
  */
 exports.addModifyCategories = async (req, res) => {
   try {
-    const { chartertype, description ,section} = req.body;
+    const { chartertype, description, section } = req.body;
     // console.log(chartertype, description);
     // Validate required fields
     if (!chartertype || !description || !section) {
@@ -52,7 +52,7 @@ exports.addModifyCategories = async (req, res) => {
       chartertype,
       description,
       image: result.secure_url,
-      section
+      section,
     });
 
     // Save to database
@@ -70,7 +70,7 @@ exports.addModifyCategories = async (req, res) => {
 exports.editModifyCharterById = async (req, res) => {
   try {
     const id = req.params.id;
-    const { chartertype, description ,section } = req.body;
+    const { chartertype, description, section } = req.body;
 
     if (!id || (!chartertype && !description && !req.file && !section)) {
       return res
@@ -153,6 +153,7 @@ exports.addSubCategories = async (req, res) => {
   try {
     const {
       chartertype,
+      subCategoryName,
       pax,
       speed,
       price,
@@ -168,6 +169,7 @@ exports.addSubCategories = async (req, res) => {
     // Validate other fields if necessary
     if (
       !chartertype ||
+      !subCategoryName ||
       !pax ||
       !speed ||
       !price ||
@@ -194,6 +196,7 @@ exports.addSubCategories = async (req, res) => {
     // Create new category modification
     const newModify = new Subcategory({
       chartertype,
+      subCategoryName,
       pax,
       speed,
       price,
@@ -230,11 +233,9 @@ exports.getsubCategorybyType = async (req, res) => {
     }
     const filldata = await Subcategory.find({ chartertype: type });
     if (filldata.length === 0) {
-      return res
-        .status(400)
-        .json({
-          message: "No such subcategory exists for the given charter type",
-        });
+      return res.status(400).json({
+        message: "No such subcategory exists for the given charter type",
+      });
     }
     return res.status(200).json({
       message: "Flights are fetched successfully",
@@ -258,6 +259,7 @@ exports.editSubCategoryById = async (req, res) => {
     }
     const {
       chartertype,
+      subCategoryName,
       pax,
       speed,
       price,
@@ -271,6 +273,7 @@ exports.editSubCategoryById = async (req, res) => {
     } = req.body;
     if (
       !chartertype ||
+      !subCategoryName ||
       !pax ||
       !speed ||
       !price ||
@@ -299,6 +302,7 @@ exports.editSubCategoryById = async (req, res) => {
       id,
       {
         chartertype,
+        subCategoryName,
         pax,
         speed,
         price,
@@ -352,8 +356,7 @@ exports.deleteModifySubCharterById = async (req, res) => {
   }
 };
 
-
-/** 
+/**
  * On Demand Search Api
  */
 exports.onDemandSearch = async (req, res) => {
@@ -370,8 +373,7 @@ exports.onDemandSearch = async (req, res) => {
         .json({ message: "There is no such type of Sevice" });
     }
 
-
-    console.log(typeData)
+    console.log(typeData);
     const categoryData = await Categorymodify.findOne({
       section: typeData.section,
     });
@@ -389,7 +391,7 @@ exports.onDemandSearch = async (req, res) => {
       departure: departure,
       arrival: arrival,
       date: date,
-      pax:pax
+      pax: pax,
     });
 
     console.log(SubCategoryType);
@@ -404,43 +406,34 @@ exports.onDemandSearch = async (req, res) => {
       .json({ message: "Data Searched Successfully", data: SubCategoryType });
   } catch (error) {
     console.log(error);
-    res.status(500).json({message:"Server Error"})
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
 /**
  * Type Section Starts
  */
+
 exports.sectionAdding = async (req, res) => {
   try {
-    const { section, lit } = req.body;
-    if (!section || !lit) {
+    const { section, active } = req.body;
+    if (!section || !active) {
       return res.status(400).json({ message: "Missing fields" });
     }
-
-    // Use `findOne` instead of `find` to check for existence
-    const exist = await Type.findOne({ section: section, lit: lit });
+    const exist = await Type.findOne({ section: section, active: active });
     if (exist) {
       return res.status(400).json({ message: "Type already exists" });
     }
-
-    // Create a new type entry
     const addData = new Type({
       section,
-      lit
+      active,
     });
-
-    // Await the save operation
     await addData.save();
-
-    // Respond with success message
     res.status(201).json({ message: "Type added successfully", data: addData });
   } catch (error) {
-    // Send error message with status 500
     res.status(500).json({ message: error.message || "Error occurred" });
   }
 };
-
 
 /**
  * Get section for all Data
@@ -458,8 +451,6 @@ exports.getAllTypes = async (req, res) => {
   }
 };
 
-
-
 /**
  * Delete Type
  */
@@ -467,7 +458,6 @@ exports.getAllTypes = async (req, res) => {
 exports.deleteTypeById = async (req, res) => {
   try {
     const id = req.params.id;
-
     if (!id) {
       return res.status(400).json({ message: "ID is missing" });
     }
@@ -484,3 +474,28 @@ exports.deleteTypeById = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+/**
+ * Get category based on Type
+ */
+exports.filterByType = async (req, res) => {
+  try {
+    const urlType = req.params.type;
+    if (!urlType) {
+      res.status(404).json({ message: "params in the url is not Found" });
+    }
+    const filteredCategory = await Categorymodify.find({ section: urlType });
+    if (!filteredCategory) {
+      res.status(404).json({ message: "No Categories of specific type" });
+    }
+    res
+      .status(200)
+      .json({ message: "Filtered Data Successfully", data: filteredCategory });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server is Error" });
+  }
+};
+/**
+ * Get Sub Category based on Category
+ */
