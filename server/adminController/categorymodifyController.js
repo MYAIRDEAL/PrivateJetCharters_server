@@ -120,18 +120,27 @@ exports.deleteModifyCharterById = async (req, res) => {
       return res.status(400).json({ message: "ID is missing" });
     }
 
+    // Fetch the Categorymodify document by its ID
     const category = await Categorymodify.findById(id);
+  
     if (!category) {
       return res.status(404).json({ message: "Data not found" });
     }
 
+    // Delete all Subcategory documents related to the chartertype of the fetched Categorymodify document
+    await Subcategory.deleteMany({ chartertype: category.chartertype });
+
+    // Delete the Categorymodify document
     await Categorymodify.findByIdAndDelete(id);
+
+    // Respond with a success message
     return res.status(200).json({ message: "Data deleted successfully" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error" });
   }
 };
+
 
 /**
  * Get Sub Category Data
@@ -555,18 +564,34 @@ exports.deleteTypeById = async (req, res) => {
       return res.status(400).json({ message: "ID is missing" });
     }
 
-    const category = await Type.findById(id);
-    if (!category) {
-      return res.status(404).json({ message: "Data not found" });
+    // Fetch the Type document by its ID
+    const typeData = await Type.findById(id);
+    if (!typeData) {
+      return res.status(404).json({ message: "Type not found" });
     }
 
+    // Extract chartertype values from related Categorymodify documents
+    const cateData = await Categorymodify.find({ section: typeData.section });
+    const chartertypes = cateData.map(cat => cat.chartertype);
+
+    // Delete related Categorymodify documents
+    await Categorymodify.deleteMany({ section: typeData.section });
+
+    // Delete related Subcategory documents
+    await Subcategory.deleteMany({ chartertype: { $in: chartertypes } });
+
+    // Delete the Type document
     await Type.findByIdAndDelete(id);
+
+    // Respond with a success message
     return res.status(200).json({ message: "Data deleted successfully" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+
 
 /**
  * Get category based on Type
@@ -578,9 +603,10 @@ exports.filterByType = async (req, res) => {
       res.status(404).json({ message: "params in the url is not Found" });
     }
     const filteredCategory = await Categorymodify.find({ section: urlType });
-    if (!filteredCategory) {
-      res.status(404).json({ message: "No Categories of specific type" });
+    if (filteredCategory.length == 0) {
+      return res.status(404).json({ message: "No Categories of specific type" });
     }
+
     res
       .status(200)
       .json({ message: "Filtered Data Successfully", data: filteredCategory });
@@ -590,24 +616,69 @@ exports.filterByType = async (req, res) => {
   }
 };
 
+
+/** 
+ * Type Editing
+ */
+exports.editTypeById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const {  section, active } = req.body;
+
+    if (!section || !active) {
+      return res.status(400).json({ message: "Fields to update are missing" });
+    }
+
+    const updatedType = await Type.findByIdAndUpdate(
+      id,
+      { section , active},
+      { new: true }
+    );
+
+    if (!updatedType) {
+      return res.status(404).json({ message: "Error in updating data" });
+    }
+    return res
+      .status(200)
+      .json({ message: "Data updated successfully", data:updatedType });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+
+
+
 /**
  * Get Sub Category based on Category
  */
-exports.getSubCategoryId=async(req,res)=>{
+exports.getSubCategoryId = async (req, res) => {
   try {
-    const subcategoryfromUrl=req.params.id;
-    if(!subcategoryfromUrl){
-      res.status(404).json({message:"Category is missing in the Url"})
+    const subcategoryId = req.params.id;
+
+    if (!subcategoryId) {
+      return res.status(400).json({ message: "Subcategory ID is missing in the URL" });
     }
-   const filteredSubCategory=await Subcategory.find({subcategoryfromUrl});
-   if(!filteredSubCategory){
-    res.status(404).json({message:"No flights found n particular Search"});
-   }
-   res.status(200).json({message:"subcategory fetched Sucesfully",data:filteredSubCategory})
+
+    const filteredSubCategory = await Subcategory.find({ _id: subcategoryId });
+
+    if (!filteredSubCategory || filteredSubCategory.length === 0) {
+      return res.status(404).json({ message: "No subcategory found for the provided ID" });
+    }
+
+    return res.status(200).json({
+      message: "Subcategory fetched successfully",
+      data: filteredSubCategory
+    });
+
   } catch (error) {
-    
+    console.error("Error fetching subcategory:", error.message);
+    return res.status(500).json({ message: "Server error", error: error.message });
   }
-}
+};
 
 
 
@@ -793,15 +864,20 @@ exports.addLogDetails=async(req,res)=>{
 }
 
 //get all log details
-exports.getAllLogs=async(req,res)=>{
+exports.getAllLogs = async (req, res) => {
   try {
-    const response=await Log.find({});
-    if(response.length == 0){
-      return res.status(404).json({message:"No log details"})
+    const response = await Log.find({});
+    
+    if (response.length === 0) {
+      return res.status(404).json({ message: "No log details found" });
     }
-    return res.status(200).json({message:"log detils fetched successfully",data:response})
+    
+    return res.status(200).json({
+      message: "Log details fetched successfully",
+      data: response
+    });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({message:"Server is not running"})
+    console.error("Error fetching logs:", error.message);
+    return res.status(500).json({ message: "Server error", error: error.message });
   }
-}
+};
