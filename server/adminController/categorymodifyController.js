@@ -68,14 +68,19 @@ exports.addModifyCategories = async (req, res) => {
   }
 };
 
+
 /**
- * Edit Category by id
+ * Edit Category by ID
+ */
+/**
+ * Edit Category by ID
  */
 exports.editModifyCharterById = async (req, res) => {
   try {
     const id = req.params.id;
     const { chartertype, description, section } = req.body;
 
+    // Check if ID or any fields to update are missing
     if (!id || (!chartertype && !description && !req.file && !section)) {
       return res
         .status(400)
@@ -84,31 +89,58 @@ exports.editModifyCharterById = async (req, res) => {
 
     let image;
 
+    // Handle image upload if a new file is provided
     if (req.file) {
       // Upload the new image to Cloudinary
       const result = await cloudinary.uploader.upload(req.file.path);
       image = result.secure_url;
     } else {
-      image = req.body.image;
+      image = req.body.image; // If no new file, use the existing image
     }
 
+    // Find the original category before the update (for comparison)
+    const preData = await Categorymodify.findById(id);
+    if (!preData) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    // Update the main Categorymodify document
     const updatedCategory = await Categorymodify.findByIdAndUpdate(
       id,
       { chartertype, description, image, section },
       { new: true }
     );
 
+    // Check if the update was successful
     if (!updatedCategory) {
       return res.status(404).json({ message: "Error in updating data" });
     }
-    return res
-      .status(200)
-      .json({ message: "Data updated successfully", updatedCategory });
+
+    // Update all Subcategory documents where the chartertype and section are the same as the pre-update data
+    const updatedSubcategories = await Subcategory.updateMany(
+      {
+        chartertype: preData.chartertype, // Match pre-update chartertype
+        section: preData.section // Match pre-update section
+      },
+      {
+        chartertype: updatedCategory.chartertype, // Update to the new chartertype
+        section: updatedCategory.section // Update to the new section
+      }
+    );
+
+    // Respond with a success message and the updated category
+    return res.status(200).json({
+      message: "Data updated successfully",
+      updatedCategory,
+      updatedSubcategories: updatedSubcategories.modifiedCount // Show how many subcategories were updated
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+
 
 /**
  * Delete Category Data
@@ -678,27 +710,70 @@ exports.filterByType = async (req, res) => {
 /** 
  * Type Editing
  */
+/**
+ * Type Editing
+ */
 exports.editTypeById = async (req, res) => {
   try {
     const id = req.params.id;
-    const {  section, active } = req.body;
+    const { section, active } = req.body;
 
-    if (!section || !active) {
+    // Validate input
+    if (!section || active === undefined) {
       return res.status(400).json({ message: "Fields to update are missing" });
     }
 
+    // Fetch the pre-update Type data
+    const preData = await Type.findById(id);
+    if (!preData) {
+      return res.status(404).json({ message: "Type not found" });
+    }
+
+    // console.log("Pre-update section:", preData.section); // Debugging log
+
+    // Log current matching categories
+    const matchingCategories = await Categorymodify.find({ section: preData.section.trim() });
+    console.log("Matching Categories before update:", matchingCategories);
+
+    // Log current matching subcategories
+    const matchingSubcategories = await Subcategory.find({ section: preData.section.trim() });
+    console.log("Matching Subcategories before update:", matchingSubcategories);
+
+    // Update Type document
     const updatedType = await Type.findByIdAndUpdate(
       id,
-      { section , active},
+      { section, active },
       { new: true }
     );
 
     if (!updatedType) {
-      return res.status(404).json({ message: "Error in updating data" });
+      return res.status(404).json({ message: "Error in updating Type data" });
     }
-    return res
-      .status(200)
-      .json({ message: "Data updated successfully", data:updatedType });
+
+    // Update all related documents in Categorymodify where section matches the old section
+    const updatedCategories = await Categorymodify.updateMany(
+      { section: preData.section.trim() }, // Ensure matching with the previous section
+      { $set: { section: section.trim() } } // Set the new section value
+    );
+
+    // console.log("Updated Categories Count:", updatedCategories.modifiedCount); // Debugging log
+
+    // Update all related documents in Subcategory where section matches the old section
+    const updatedSubcategories = await Subcategory.updateMany(
+      { section: preData.section.trim() }, // Ensure matching with the previous section
+      { $set: { section: section.trim() } } // Set the new section value
+    );
+
+    console.log("Updated Subcategories Count:", updatedSubcategories.modifiedCount); // Debugging log
+
+    return res.status(200).json({
+      message: "Data updated successfully",
+      data: {
+        updatedType,
+        updatedCategories: updatedCategories.modifiedCount,
+        updatedSubcategories: updatedSubcategories.modifiedCount
+      }
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error" });

@@ -7,6 +7,15 @@ const AdminSchema=mongoose.Schema({
     password:{
         type:String,
         required:true
+    },
+    role:{
+        type:String,
+        required:true,
+        enum:["user-admin","operator","broker"]
+    },
+    name:{
+        type:String,
+        required:true
     }
 })
 module.exports=mongoose.model('admin',AdminSchema);
