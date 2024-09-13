@@ -247,7 +247,7 @@ exports.deleteAdmin = async (req, res) => {
 exports.getAllAdmins = async (req, res) => {
   try {
     // Fetch all admins and exclude password and __v
-    const adminData = await admin.find({}).select("-password -__v");
+    const adminData = await admin.find({}).select("-__v");
 
     // Check if admin data exists
     if (adminData.length === 0) {
@@ -261,5 +261,51 @@ exports.getAllAdmins = async (req, res) => {
   } catch (error) {
     console.error("Error fetching admins:", error.message);
     return res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+
+
+/**
+ * Edit the User Role
+ */
+
+exports.editUserRole = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    if (!id) {
+      return res.status(400).json({ message: "ID is missing" });
+    }
+
+    const { name, email, password, role } = req.body;
+    
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({ message: "Missing Fields" });
+    }
+
+    const userData = await admin.findById(id);
+    
+    if (!userData) {
+      return res.status(404).json({ message: "User data not found" });
+    }
+
+    // Hash the password before updating it
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const updatedData = await admin.findByIdAndUpdate(
+      id,
+      { name, email, password: hashedPassword, role },
+      { new: true }
+    );
+
+    if (!updatedData) {
+      return res.status(400).json({ message: "Error updating the data" });
+    }
+
+    return res.status(200).json({ message: "Data updated successfully", data: updatedData });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error" });
   }
 };

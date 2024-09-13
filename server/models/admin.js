@@ -11,7 +11,7 @@ const AdminSchema=mongoose.Schema({
     role:{
         type:String,
         required:true,
-        enum:["user-admin","operator","broker"]
+        enum:["user-admin","operator","broker","super-admin"]
     },
     name:{
         type:String,
