@@ -71,6 +71,7 @@ exports.addModifyCategories = async (req, res) => {
 /**
  * Edit Category by ID
  */
+
 exports.editModifyCharterById = async (req, res) => {
   try {
     const id = req.params.id;
@@ -124,11 +125,25 @@ exports.editModifyCharterById = async (req, res) => {
       }
     );
 
+
+  const updatedFlightDetails=await FlightDetails.findByIdAndUpdate(
+    {
+      chartertype: preData.chartertype, // Match pre-update chartertype
+      section: preData.section // Match pre-update section
+    },
+    {
+      chartertype: updatedCategory.chartertype, // Update to the new chartertype
+      section: updatedCategory.section // Update to the new section
+    }
+  )
+
     // Respond with a success message and the updated category
     return res.status(200).json({
       message: "Data updated successfully",
       updatedCategory,
-      updatedSubcategories: updatedSubcategories.modifiedCount // Show how many subcategories were updated
+      updatedSubcategories: updatedSubcategories.modifiedCount,
+      updatedFlightDetails:updatedFlightDetails.modifiedCount
+      // Show how many subcategories were updated
     });
   } catch (error) {
     console.error(error);
@@ -156,8 +171,10 @@ exports.deleteModifyCharterById = async (req, res) => {
       return res.status(404).json({ message: "Data not found" });
     }
 
-    // Delete all Subcategory documents related to the chartertype of the fetched Categorymodify document
     await Subcategory.deleteMany({ chartertype: category.chartertype });
+
+//delete the Flight details 
+     await FlightDetails.deleteMany({chartertype:category.chartertype})
 
     // Delete the Categorymodify document
     await Categorymodify.findByIdAndDelete(id);
@@ -562,7 +579,7 @@ exports.deleteModifySubCharterById = async (req, res) => {
     if (!category) {
       return res.status(404).json({ message: "Data not found" });
     }
-
+    await FlightDetails.deleteMany({subCategoryName:category.subCategoryName})
     await Subcategory.findByIdAndDelete(id);
     return res.status(200).json({ message: "Data deleted successfully" });
   } catch (error) {

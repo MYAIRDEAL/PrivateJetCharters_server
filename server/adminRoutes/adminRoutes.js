@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
+const flightDetails=require('../adminController/flightDetails')
 const adminController = require("../adminController/adminController");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("cloudinary").v2;
@@ -183,3 +184,9 @@ router.get('/getalllogs',modifyController.getAllLogs)
  * Filter data based on Type and Category
  */
 router.post('/filterbytypeandcategory/:section/:chartertype',modifyController.filterByTypeAndCategory)
+
+
+/**
+ * FLight Details
+ */
+router.get('/getAllpushData',flightDetails.getAllPushData)
