@@ -75,13 +75,15 @@ router.post("/filteremptylegbooking", adminController.filterEmptyLegDate);
 router.delete(
   "/deleteemptylegbookingbyid/:id",
   adminController.deleteEmptyLegBookingById
-);
+);  
 
 /**Register and Login Routes */
 router.post("/register", loginController.register);
 router.post("/login", loginController.login);
 router.delete("/deleteadmin/:id", loginController.deleteAdmin);
 router.get('/getalladmins',loginController.getAllAdmins)
+router.put('/updateuserrolebyid/:id',loginController.editUserRole)
+router.get('/getadminbyid/:id',loginController.getAdminById)
 
 /** Feedback Section */
 router.post("/addfeedback", adminController.addFeedback);

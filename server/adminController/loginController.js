@@ -247,7 +247,7 @@ exports.deleteAdmin = async (req, res) => {
 exports.getAllAdmins = async (req, res) => {
   try {
     // Fetch all admins and exclude password and __v
-    const adminData = await admin.find({}).select("-__v");
+    const adminData = await admin.find({}).select("-password -__v");
 
     // Check if admin data exists
     if (adminData.length === 0) {
@@ -304,6 +304,29 @@ exports.editUserRole = async (req, res) => {
     }
 
     return res.status(200).json({ message: "Data updated successfully", data: updatedData });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+/**
+ * Get admin by Id
+ */
+exports.getAdminById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!id) {
+      return res.status(404).json({ message: "id is not Found" });
+    }
+    const foundData = await admin.findById(id).select("-password -__v");
+    if (!foundData) {
+      return res.status(400).json({ message: "data not fount" });
+    }
+    return res
+      .status(200)
+      .json({ message: "data fetched successfully", data: foundData });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server Error" });
