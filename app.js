@@ -13,6 +13,7 @@ dotenv.config();
 // Static Files
 app.use(express.static('public'));
 
+
 // Middleware
 app.use(express.json());
 app.use(cors());
