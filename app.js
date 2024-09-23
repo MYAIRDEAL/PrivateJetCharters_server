@@ -16,6 +16,8 @@ app.use(express.static('public'));
 // Middleware
 app.use(express.json());
 app.use(cors());
+// Allow access from all origins
+app.use(cors({ origin: '*' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Suhail Edit: Component Management API
