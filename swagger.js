@@ -5,7 +5,8 @@ const doc = {
     title: 'BookAnyJet Documentation',
     description: 'This is the BookAnyJet documentation which says the working of all the api'
   },
-  host: 'localhost:8000',
+  host: 'https://bookanyjetserver.onrender.com/api/admin/api-docs/',
+  scheme:["https"]
 };
 
 const outputFile = './swagger-output.json';
