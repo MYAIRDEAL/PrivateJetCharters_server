@@ -72,6 +72,9 @@ exports.addModifyCategories = async (req, res) => {
 /**
  * Edit Category by ID
  */
+/**
+ * Edit Category by ID
+ */
 exports.editModifyCharterById = async (req, res) => {
   try {
     const id = req.params.id;
@@ -667,11 +670,11 @@ exports.editTypeById = async (req, res) => {
 
     // Log current matching categories
     const matchingCategories = await Categorymodify.find({ section: preData.section.trim() });
-    // console.log("Matching Categories before update:", matchingCategories);
+    console.log("Matching Categories before update:", matchingCategories);
 
     // Log current matching subcategories
     const matchingSubcategories = await Subcategory.find({ section: preData.section.trim() });
-    // console.log("Matching Subcategories before update:", matchingSubcategories);
+    console.log("Matching Subcategories before update:", matchingSubcategories);
 
     // Update Type document
     const updatedType = await Type.findByIdAndUpdate(
@@ -908,6 +911,10 @@ exports.filterDate = async (req, res) => {
 };
 /** Booking Section Ends */
 
+
+/**
+ * Log Details API Starts
+ */
 
 /**
  * Adding the Log details
