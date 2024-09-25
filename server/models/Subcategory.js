@@ -16,32 +16,6 @@ const SubcategorySchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  speed: {
-    type: String,
-    required: true,
-  },
-  price: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  image: {
-    type: String,
-    required: "This file is required.",
-  },
-  availability: {
-    type: String,
-    enum:['yes','no'],
-    required: true,
-    default: "no",
-  },
-  bookingtype: {
-    type: String,
-    required: true,
-  },
   departure: {
     type: String,
     required: true,
@@ -50,117 +24,111 @@ const SubcategorySchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  journeytype: {
+  image: {
     type: String,
-    required: true,
-    enum:["one-way","round-trip","multi-leg"],
-    default:"one-way"
+    required: "This file is required.",
   },
   date: {
     type: String,
     required: true,
   },
-  yom: {
+  speed: {
+    type: String
+  },
+  price: {
+    type: String
+  },
+  description: {
+    type: String
+  },
+
+  availability: {
     type: String,
-    required: true,
+    enum: ["yes", "no"],
+    default: "no",
+  },
+  journeytype: {
+    type: String,
+    enum: ["one-way", "round-trip", "multi-leg"],
+    default: "one-way",
+  },
+  yom: {
+    type: String
   },
   seats: {
-    type: String,
-    required: true,
+    type: String
   },
   crew: {
-    type: String,
-    required: true,
+    type: String
   },
   airhosts: {
-    type: String,
-    required: true,
+    type: String
   },
-  levatory: {
-    type: String,
-    required: true,
+  lavatory: {
+    type: String
   },
   fromtime: {
-    type: String,
-    required: true,
+    type: String
   },
   endtime: {
-    type: String,
-    required: true,
+    type: String
   },
   flyingrange: {
-    type: String,
-    required: true,
+    type: String
   },
   cabinwidth: {
-    type: String,
-    required: true,
+    type: String
   },
   cabinheight: {
-    type: String,
-    required: true,
+    type: String
   },
   baggage: {
-    type: String,
-    required: true,
+    type: String
   },
   cabinlength: {
-    type: String,
-    required: true,
+    type: String
   },
   pilot: {
-    type: String,
-    required: true,
+    type: String
   },
   discount: {
-    type: String,
-    required: true,
+    type: String
   },
   discountprice: {
     type: String,
-    required: true,
-    default:"0",
+    default: "0",
   },
   duration: {
+    type: String
+  },
+  reachdate: {
+    type: String
+  },
+  yor: {
+    type: String
+  },
+  targetprice: {
+    type: String
+  },
+  brokercompany: {
+    type: String
+  },
+  flexibility: {
     type: String,
-    required: true,
+    enum: ["yes", "no"],
+    default: "no",
   },
-  reachdate:{
-    type:String,
-    required:true
+  operatorname: {
+    type: String
   },
-  yor:{
-    type:String,
-    required:true
-  },
-  targetprice:{
-    type:String,
-    required:true
-  },
-  brokercompany:{
-    type:String,
-    required:true
-  },
-  flexibility:{
-    type:String,
-    required:true,
-    enum:["yes","no"],
-    default:"no"
-  },
-  operatorname:{
-    type:String,
-    required:true,
-  },
-  operatoremail:{
-    type:String,
-    required:true,
+  operatoremail: {
+    type: String,
     match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"]
   },
-  operatorphone:{
-    type:String,
-    match: [/^\d{10}$/, "Please enter a valid phone number"],
-    required:true
-  }
+  operatorphone: {
+    type: String,
+    match: [/^\d{10}$/, "Please enter a valid phone number"]
+  },
 });
 
 module.exports = mongoose.model("Subcategory", SubcategorySchema);

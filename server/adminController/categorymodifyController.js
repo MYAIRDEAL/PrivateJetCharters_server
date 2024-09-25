@@ -205,7 +205,6 @@ exports.addSubCategories = async (req, res) => {
       price,
       description,
       availability,
-      bookingtype,
       departure,
       arrival,
       journeytype,
@@ -215,7 +214,7 @@ exports.addSubCategories = async (req, res) => {
       crew,
       baggage,
       airhosts,
-      levatory,
+      lavatory,
       fromtime,
       endtime,
       cabinheight,
@@ -232,55 +231,25 @@ exports.addSubCategories = async (req, res) => {
       flexibility,
       operatorname,
       operatoremail,
-      operatorphone
+      operatorphone,
     } = req.body;
 
     // Validate other fields if necessary
     if (
       !section ||
-      !chartertype ||
-      !subCategoryName ||
-      !pax ||
-      !speed ||
-      !price ||
-      !availability ||
-      !description ||
-      !bookingtype ||
-      !departure ||
       !arrival ||
-      !journeytype ||
+      !departure ||
+      !pax ||
       !date ||
-      !yom ||
-      !seats ||
-      !crew ||
-      !baggage ||
-      !airhosts ||
-      !levatory ||
-      !fromtime ||
-      !endtime ||
-      !cabinheight ||
-      !cabinwidth ||
-      !flyingrange ||
-      !cabinlength ||
-      !pilot ||
-      !discount ||
-      !duration ||
-      !reachdate ||
-      !yor ||
-      !targetprice ||
-      !brokercompany ||
-      !flexibility ||
-      !operatoremail ||
-      !operatorname ||
-      !operatorphone
-     
+      !chartertype ||
+      !subCategoryName
     ) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.status(400).json({ message: "Mandatory fields are required" });
     }
 
     const image = req.file ? req.file.path : null;
- const caldiscount=(discount/100)*price
-//  console.log(caldiscount)
+    const caldiscount = (discount / 100) * price;
+    //  console.log(caldiscount)
     if (!image) {
       return res.status(400).json({ message: "Image file is required" });
     }
@@ -298,7 +267,6 @@ exports.addSubCategories = async (req, res) => {
       price,
       description,
       availability,
-      bookingtype,
       departure,
       arrival,
       journeytype,
@@ -309,7 +277,7 @@ exports.addSubCategories = async (req, res) => {
       crew,
       baggage,
       airhosts,
-      levatory,
+      lavatory,
       fromtime,
       endtime,
       cabinheight,
@@ -318,7 +286,7 @@ exports.addSubCategories = async (req, res) => {
       cabinlength,
       pilot,
       discount,
-      discountprice:caldiscount,
+      discountprice: caldiscount,
       duration,
       reachdate,
       yor,
@@ -327,7 +295,7 @@ exports.addSubCategories = async (req, res) => {
       flexibility,
       operatorname,
       operatoremail,
-      operatorphone
+      operatorphone,
     });
 
     // Save to database
@@ -386,7 +354,6 @@ exports.editSubCategoryById = async (req, res) => {
       price,
       description,
       availability,
-      bookingtype,
       departure,
       arrival,
       journeytype,
@@ -396,7 +363,7 @@ exports.editSubCategoryById = async (req, res) => {
       crew,
       baggage,
       airhosts,
-      levatory,
+      lavatory,
       fromtime,
       endtime,
       cabinheight,
@@ -417,43 +384,14 @@ exports.editSubCategoryById = async (req, res) => {
     } = req.body;
     if (
       !section ||
-      !chartertype ||
-      !subCategoryName ||
-      !pax ||
-      !speed ||
-      !price ||
-      !availability ||
-      !description ||
-      !bookingtype ||
-      !departure ||
       !arrival ||
-      !journeytype ||
+      !departure ||
+      !pax ||
       !date ||
-      !yom ||
-      !seats ||
-      !crew ||
-      !baggage ||
-      !airhosts ||
-      !levatory ||
-      !fromtime ||
-      !endtime ||
-      !cabinheight ||
-      !cabinwidth ||
-      !flyingrange ||
-      !cabinlength ||
-      !pilot ||
-      !discount ||
-      !reachdate ||
-      !duration ||
-      !yor ||
-      !targetprice ||
-      !brokercompany ||
-      !flexibility ||
-      !operatoremail ||
-      !operatorname ||
-      !operatorphone
+      !chartertype ||
+      !subCategoryName
     ) {
-      return res.status(400).json({ message: "Missing fields" });
+      return res.status(400).json({ message: "Mandatory fields are missing." });
     }
 
     let image;
@@ -479,7 +417,6 @@ exports.editSubCategoryById = async (req, res) => {
         price,
         description,
         availability,
-        bookingtype,
         departure,
         arrival,
         journeytype,
@@ -489,7 +426,7 @@ exports.editSubCategoryById = async (req, res) => {
         crew,
         baggage,
         airhosts,
-        levatory,
+        lavatory,
         fromtime,
         endtime,
         cabinheight,
@@ -1126,30 +1063,38 @@ exports.getAllEnquiry = async (req, res) => {
 exports.filterByTypeAndCategory = async (req, res) => {
   try {
     const { section, chartertype } = req.params;
-
+console.log(section)
+console.log(chartertype)
     // Check if required parameters are present
-    if (!section || !chartertype) {
-      return res.status(400).json({ message: "Required parameters 'section' or 'chartertype' are missing." });
+    if (!section) {
+      return res.status(400).json({ message: "'section' parameter is missing." });
+    }
+    if (!chartertype) {
+      return res.status(400).json({ message: "'chartertype' parameter is missing." });
     }
 
     // Query to find the data
     const data = await Subcategory.find({ section, chartertype });
 
     // Check if data is found
-    if (!data) {
-      return res.status(404).json({ message: "No subcategories found matching the provided section and charter type." });
+    if (data.length === 0) {
+      return res.status(404).json({ message: `No subcategories found for section '${section}' and charter type '${chartertype}'.` });
     }
 
     // Return success response with data
     return res.status(200).json({
       message: "Subcategories fetched successfully.",
-      data: data,
+      data,
     });
   } catch (error) {
     console.error("Error fetching subcategories:", error.message);
-    return res.status(500).json({ message: "An error occurred while fetching subcategories.", error: error.message });
+    return res.status(500).json({
+      message: "An error occurred while fetching subcategories.",
+      error: error.message,
+    });
   }
 };
+
 
 
 
