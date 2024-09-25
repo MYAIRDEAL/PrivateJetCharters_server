@@ -107,7 +107,7 @@ router.post(
   upload.single("image"),
   modifyController.addModifyCategories
 );
-router.put(
+router.post(
   "/editmodifycharterbyid/:id",
   upload.single("image"),
   modifyController.editModifyCharterById
@@ -126,7 +126,7 @@ router.post(
   upload.single("image"),
   modifyController.addSubCategories
 );
-router.put(
+router.post(
   "/editmodifysubcharterbyid/:id",
   upload.single("image"),
   modifyController.editSubCategoryById
