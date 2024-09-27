@@ -173,6 +173,7 @@ router.delete("/deletebookingbyid/:id", modifyController.deleteBookingById);
 router.post('/addenquiry',modifyController.addEnquiry)
 router.delete('/deleteenquirybyid/:id',modifyController.deleteEnquiryById)
 router.get('/getallenquiry',modifyController.getAllEnquiry)
+router.post('/filterenquirybydate',modifyController.filterEnquiryByDate)
 
 
 /**
@@ -185,3 +186,5 @@ router.get('/getalllogs',modifyController.getAllLogs)
  * Filter data based on Type and Category
  */
 router.post('/filterbytypeandcategory/:section/:chartertype',modifyController.filterByTypeAndCategory)
+
+router.post('/filterSubCategoryByType/:type',modifyController.filterSubCategoryByType)

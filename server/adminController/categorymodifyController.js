@@ -232,6 +232,7 @@ exports.addSubCategories = async (req, res) => {
       operatorname,
       operatoremail,
       operatorphone,
+      addedBy
     } = req.body;
 
     // Validate other fields if necessary
@@ -296,6 +297,7 @@ exports.addSubCategories = async (req, res) => {
       operatorname,
       operatoremail,
       operatorphone,
+      addedBy
     });
 
     // Save to database
@@ -349,6 +351,7 @@ exports.editSubCategoryById = async (req, res) => {
       section,
       chartertype,
       subCategoryName,
+      addedBy,
       pax,
       speed,
       price,
@@ -389,7 +392,7 @@ exports.editSubCategoryById = async (req, res) => {
       !pax ||
       !date ||
       !chartertype ||
-      !subCategoryName
+      !subCategoryName 
     ) {
       return res.status(400).json({ message: "Mandatory fields are missing." });
     }
@@ -443,7 +446,8 @@ exports.editSubCategoryById = async (req, res) => {
       flexibility,
       operatorname,
       operatoremail,
-      operatorphone
+      operatorphone,
+      addedBy
       },
       { new: true }
     );
@@ -644,9 +648,6 @@ exports.filterByType = async (req, res) => {
 };
 
 
-/** 
- * Type Editing
- */
 /**
  * Type Editing
  */
@@ -883,32 +884,43 @@ exports.deleteBookingById = async (req, res) => {
  */
 exports.filterDate = async (req, res) => {
   try {
-    const { from, to } = req.body;
+      const { from, to } = req.body;
 
-    // Check if the from and to dates are provided
-    if (!from || !to) {
-      return res
-        .status(400)
-        .json({ message: "From and To dates are required" });
-    }
+      // Check if the from and to dates are provided
+      if (!from || !to) {
+          return res.status(400).json({ message: "From and To dates are required" });
+      }
 
-    const allBookings = await Booking.find();
+      // Function to convert dd-mm-yyyy to Date object
+      const parseDate = (dateString) => {
+          const [day, month, year] = dateString.split('-');
+          return new Date(`${year}-${month}-${day}`); // Make sure this correctly formats the date
+      };
 
-    // Filter bookings within the date range
-    const filteredData = allBookings.filter((item) => {
-      return item.date >= from && item.date <= to;
-    });
+      const fromDate = parseDate(from);
+      const toDate = parseDate(to);
 
-    // Send the filtered data in the response
-    res.status(200).json({
-      message: "Data fetched successfully",
-      data: filteredData,
-    });
+      // Fetch all bookings
+      const allBookings = await Booking.find();
+
+      // Filter bookings within the date range
+      const filteredData = allBookings.filter((item) => {
+          const bookingDate = parseDate(item.date); // Ensure item.date is in dd-mm-yyyy format
+          return bookingDate >= fromDate && bookingDate <= toDate;
+      });
+
+      // Send the filtered data in the response
+      res.status(200).json({
+          message: "Data fetched successfully",
+          data: filteredData,
+      });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+      console.error(error);
+      res.status(500).json({ message: "Server error" });
   }
 };
+
+
 /** Booking Section Ends */
 
 
@@ -1057,6 +1069,37 @@ exports.getAllEnquiry = async (req, res) => {
   }
 };
 
+
+
+/**
+ * Filter booking by Date
+ */
+exports.filterEnquiryByDate = async (req, res) => {
+  try {
+    const { from, to } = req.body;
+    // Check if the from and to dates are provided
+    if (!from || !to) {
+      return res
+        .status(400)
+        .json({ message: "From and To dates are required" });
+    }
+    const allBookings = await Enquiry.find();
+    // Filter bookings within the date range
+    const filteredData = allBookings.filter((item) => {
+      return item.enquirydate >= from && item.enquirydate <= to;
+    });
+    // Send the filtered data in the response
+    res.status(200).json({
+      message: "Data fetched successfully",
+      data: filteredData,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 /**
  * Filter flights by type and category
  */
@@ -1094,6 +1137,50 @@ console.log(chartertype)
     });
   }
 };
+
+
+/**
+ * Api for the Subcatgeorie of Type
+ */
+exports.filterSubCategoryByType = async (req, res) => {
+  try {
+    let type = req.params.type;
+
+    // Trim whitespace from the type parameter
+    type = type.trim();
+
+    // Check if the 'type' parameter is provided
+    if (!type) {
+      return res.status(400).json({ message: "'type' parameter is missing." });
+    }
+
+
+
+    // Fetch subcategories by type
+    const filteredSubCategory = await Subcategory.find({ section:type });
+
+ 
+
+    // Check if any subcategories were found
+    if (filteredSubCategory.length === 0) {
+      return res.status(404).json({ message: "No data found for the specified Type" });
+    }
+
+    // Return the filtered subcategories
+    return res.status(200).json({
+      message: "SubCategory fetched Successfully",
+      data: filteredSubCategory,
+    });
+  } catch (error) {
+    console.error("Error fetching subcategories:", error.message);
+    return res.status(500).json({
+      message: "An error occurred while fetching subcategories.",
+      error: error.message,
+    });
+  }
+};
+
+
 
 
 

@@ -129,6 +129,9 @@ const SubcategorySchema = mongoose.Schema({
     type: String,
     match: [/^\d{10}$/, "Please enter a valid phone number"]
   },
+  addedBy:{
+    type:String
+  }
 });
 
 module.exports = mongoose.model("Subcategory", SubcategorySchema);
