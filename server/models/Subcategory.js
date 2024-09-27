@@ -122,12 +122,10 @@ const SubcategorySchema = mongoose.Schema({
     type: String
   },
   operatoremail: {
-    type: String,
-    match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"]
+    type: String
   },
   operatorphone: {
-    type: String,
-    match: [/^\d{10}$/, "Please enter a valid phone number"]
+    type: String
   },
   addedBy:{
     type:String

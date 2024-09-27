@@ -671,11 +671,11 @@ exports.editTypeById = async (req, res) => {
 
     // Log current matching categories
     const matchingCategories = await Categorymodify.find({ section: preData.section.trim() });
-    console.log("Matching Categories before update:", matchingCategories);
+    // console.log("Matching Categories before update:", matchingCategories);
 
     // Log current matching subcategories
     const matchingSubcategories = await Subcategory.find({ section: preData.section.trim() });
-    console.log("Matching Subcategories before update:", matchingSubcategories);
+    // console.log("Matching Subcategories before update:", matchingSubcategories);
 
     // Update Type document
     const updatedType = await Type.findByIdAndUpdate(
@@ -702,7 +702,7 @@ exports.editTypeById = async (req, res) => {
       { $set: { section: section.trim() } } // Set the new section value
     );
 
-    console.log("Updated Subcategories Count:", updatedSubcategories.modifiedCount); // Debugging log
+ 
 
     return res.status(200).json({
       message: "Data updated successfully",
