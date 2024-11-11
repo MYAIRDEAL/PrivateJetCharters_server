@@ -1,0 +1,1582 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "BookAnyJet Documentation",
+    "description": "This is the BookAnyJet documentation which says the working of all the api",
+    "version": "1.0.0"
+  },
+  "host": "localhost:8000",
+  "basePath": "/api/admin/",
+  "schemes": ["http"],
+  "paths": {
+    "/register": {
+  "post": {
+    "description": "Register a new user by providing email, password, role, and name. This endpoint creates a new user account and returns a success response if the registration is successful.",
+    "parameters": [
+      {
+        "name": "body",
+        "in": "body",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "example": "user@example.com"
+            },
+            "password": {
+              "type": "string",
+              "example": "yourpassword"
+            },
+            "role": {
+              "type": "string",
+              "example": "user" 
+            },
+            "name": {
+              "type": "string",
+              "example": "John Doe"
+            }
+          },
+          "required": ["email", "password", "role", "name"]
+        }
+      }
+    ],
+    "responses": {
+      "201": {
+        "description": "Created - User account successfully registered."
+      },
+      "400": {
+        "description": "Bad Request - Invalid input provided."
+      },
+      "409": {
+        "description": "Conflict - A user with this email already exists."
+      },
+      "500": {
+        "description": "Internal Server Error - An error occurred during registration."
+      }
+    }
+  }
+}
+,
+    "/login": {
+      "post": {
+        "description": "This is the api in which the users will be logged by the credentials created by the Admin",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "role": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/deleteadmin/{id}": {
+      "delete": {
+        "description": "The user role can be deleted by his id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/getalladmins": {
+      "get": {
+        "description": "This is the api in which the admin can get all the details of the user roles details",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/updateuserrolebyid/{id}": {
+      "put": {
+        "description": "The admin can update the details of any of the user with his ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "role": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/getadminbyid/{id}": {
+      "get": {
+        "description": "The admin can access the user role data individually by using his ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/modifycategory": {
+      "get": {
+        "description": "The Endpoint in which the it displays all the Categories with the Section",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/addmodifycategory": {
+      "post": {
+        "description": "The admin or else the respective user can add the Category of particular Section.Endpoint to add a modify category with an image upload",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "chartertype",
+            "in": "formData",
+            "description": "Type of charter",
+            "required": true,
+            "type": "string",
+            "example": "any"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "Category description",
+            "required": true,
+            "type": "string",
+            "example": "any"
+          },
+          {
+            "name": "section",
+            "in": "formData",
+            "description": "Section to which this category belongs",
+            "required": true,
+            "type": "string",
+            "example": "any"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "Image file to be uploaded",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/editmodifycharterbyid/{id}": {
+      "put": {
+        "description": "Edit a modify charter by its ID with image upload",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the modify charter to edit",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chartertype",
+            "in": "formData",
+            "description": "Type of charter",
+            "required": true,
+            "type": "string",
+            "example": "any"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "Category description",
+            "required": true,
+            "type": "string",
+            "example": "any"
+          },
+          {
+            "name": "section",
+            "in": "formData",
+            "description": "Section to which this category belongs",
+            "required": true,
+            "type": "string",
+            "example": "any"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "Image file to be uploaded",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/deletemodifycharterbyid/{id}": {
+      "delete": {
+        "description": "Here the admin can delete any of the particular Category with the ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/addsubcategory": {
+      "post": {
+        "description": "Add a new subcategory with details including charter type, flight information, and image upload.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "section",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Section name",
+            "example": "any"
+          },
+          {
+            "name": "chartertype",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Type of charter",
+            "example": "any"
+          },
+          {
+            "name": "subCategoryName",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Subcategory name",
+            "example": "any"
+          },
+          {
+            "name": "pax",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Number of passengers",
+            "example": "any"
+          },
+          {
+            "name": "speed",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Flight speed",
+            "example": "any"
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Price of the charter",
+            "example": "any"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Description of the charter",
+            "example": "any"
+          },
+          {
+            "name": "availability",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Charter availability",
+            "example": "any"
+          },
+          {
+            "name": "bookingtype",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Type of booking",
+            "example": "any"
+          },
+          {
+            "name": "departure",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Departure location",
+            "example": "any"
+          },
+          {
+            "name": "arrival",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Arrival location",
+            "example": "any"
+          },
+          {
+            "name": "journeytype",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Type of journey",
+            "example": "any"
+          },
+          {
+            "name": "date",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Date of the flight",
+            "example": "any"
+          },
+          {
+            "name": "yom",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Year of manufacture",
+            "example": "any"
+          },
+          {
+            "name": "seats",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Number of seats",
+            "example": "any"
+          },
+          {
+            "name": "crew",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Crew information",
+            "example": "any"
+          },
+          {
+            "name": "baggage",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Baggage policy",
+            "example": "any"
+          },
+          {
+            "name": "airhosts",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Air host information",
+            "example": "any"
+          },
+          {
+            "name": "levatory",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Lavatory information",
+            "example": "any"
+          },
+          {
+            "name": "fromtime",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Departure time",
+            "example": "any"
+          },
+          {
+            "name": "endtime",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Arrival time",
+            "example": "any"
+          },
+          {
+            "name": "cabinheight",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Height of the cabin",
+            "example": "any"
+          },
+          {
+            "name": "cabinwidth",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Width of the cabin",
+            "example": "any"
+          },
+          {
+            "name": "flyingrange",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Flying range of the aircraft",
+            "example": "any"
+          },
+          {
+            "name": "cabinlength",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Length of the cabin",
+            "example": "any"
+          },
+          {
+            "name": "pilot",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Pilot information",
+            "example": "any"
+          },
+          {
+            "name": "discount",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Discount offered",
+            "example": "any"
+          },
+          {
+            "name": "duration",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Duration of the flight",
+            "example": "any"
+          },
+          {
+            "name": "reachdate",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Reach date",
+            "example": "any"
+          },
+          {
+            "name": "yor",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Year of registration",
+            "example": "any"
+          },
+          {
+            "name": "targetprice",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Target price",
+            "example": "any"
+          },
+          {
+            "name": "brokercompany",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Broker company",
+            "example": "any"
+          },
+          {
+            "name": "flexibility",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Flexibility options",
+            "example": "any"
+          },
+          {
+            "name": "operatorname",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Operator name",
+            "example": "any"
+          },
+          {
+            "name": "operatoremail",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Operator email",
+            "example": "any"
+          },
+          {
+            "name": "operatorphone",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Operator phone",
+            "example": "any"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "required": false,
+            "type": "file",
+            "description": "Image file for the charter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/editmodifysubcharterbyid/{id}": {
+      "put": {
+        "description": "Edit or modify an existing subcategory by ID.",
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the subcategory to edit"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "required": false,
+            "type": "file",
+            "description": "Image file for the charter"
+          },
+          {
+            "name": "section",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Section name",
+            "example": "any"
+          },
+          {
+            "name": "chartertype",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Type of charter",
+            "example": "any"
+          },
+          {
+            "name": "subCategoryName",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Subcategory name",
+            "example": "any"
+          },
+          {
+            "name": "pax",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Number of passengers",
+            "example": "any"
+          },
+          {
+            "name": "speed",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Flight speed",
+            "example": "any"
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Price of the charter",
+            "example": "any"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Description of the charter",
+            "example": "any"
+          },
+          {
+            "name": "availability",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Charter availability",
+            "example": "any"
+          },
+          {
+            "name": "bookingtype",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Type of booking",
+            "example": "any"
+          },
+          {
+            "name": "departure",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Departure location",
+            "example": "any"
+          },
+          {
+            "name": "arrival",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Arrival location",
+            "example": "any"
+          },
+          {
+            "name": "journeytype",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Type of journey",
+            "example": "any"
+          },
+          {
+            "name": "date",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Date of the flight",
+            "example": "any"
+          },
+          {
+            "name": "yom",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Year of manufacture",
+            "example": "any"
+          },
+          {
+            "name": "seats",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Number of seats",
+            "example": "any"
+          },
+          {
+            "name": "crew",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Crew information",
+            "example": "any"
+          },
+          {
+            "name": "baggage",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Baggage policy",
+            "example": "any"
+          },
+          {
+            "name": "airhosts",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Air host information",
+            "example": "any"
+          },
+          {
+            "name": "levatory",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Lavatory information",
+            "example": "any"
+          },
+          {
+            "name": "fromtime",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Departure time",
+            "example": "any"
+          },
+          {
+            "name": "endtime",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Arrival time",
+            "example": "any"
+          },
+          {
+            "name": "cabinheight",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Height of the cabin",
+            "example": "any"
+          },
+          {
+            "name": "cabinwidth",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Width of the cabin",
+            "example": "any"
+          },
+          {
+            "name": "flyingrange",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Flying range of the aircraft",
+            "example": "any"
+          },
+          {
+            "name": "cabinlength",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Length of the cabin",
+            "example": "any"
+          },
+          {
+            "name": "pilot",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Pilot information",
+            "example": "any"
+          },
+          {
+            "name": "discount",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Discount offered",
+            "example": "any"
+          },
+          {
+            "name": "reachdate",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Reach date",
+            "example": "any"
+          },
+          {
+            "name": "duration",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Duration of the flight",
+            "example": "any"
+          },
+          {
+            "name": "yor",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Year of registration",
+            "example": "any"
+          },
+          {
+            "name": "targetprice",
+            "in": "formData",
+            "required": false,
+            "type": "number",
+            "description": "Target price",
+            "example": "any"
+          },
+          {
+            "name": "brokercompany",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Broker company",
+            "example": "any"
+          },
+          {
+            "name": "flexibility",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Flexibility options",
+            "example": "any"
+          },
+          {
+            "name": "operatorname",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Operator name",
+            "example": "any"
+          },
+          {
+            "name": "operatoremail",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Operator email",
+            "example": "any"
+          },
+          {
+            "name": "operatorphone",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Operator phone",
+            "example": "any"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/getallsubcategories": {
+      "get": {
+        "description": "This Endpoint is used to display all the subcategories of all the Sections as well as the Categories",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+
+    "/deletemodifysubcharterbyid/{id}": {
+      "delete": {
+        "description": "This Endpoint is used to delete any subcategory with the ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/filter/{chartertype}": {
+      "get": {
+        "description": "This Endpoint is used to fetch all the Categories irrespective of their types.",
+        "parameters": [
+          {
+            "name": "chartertype",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/categorybytype/{type}": {
+      "get": {
+        "description": "This Endpoint is used to fetch all the Categories respective of their types.",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/demandsearch": {
+      "post": {
+        "description": "This is the ondemand api in which it displays all the flights available with exact fields from the Website.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "departure": {
+                  "example": "any"
+                },
+                "arrival": {
+                  "example": "any"
+                },
+                "date": {
+                  "example": "any"
+                },
+                "pax": {
+                  "example": "any"
+                },
+                "section": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/getalltypes": {
+      "get": {
+        "description": "Displays all the Types available globally",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/addsections": {
+      "post": {
+        "description": "This is the Endpoint used to add Type",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "section": {
+                  "example": "any"
+                },
+                "active": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/deletetype/{id}": {
+      "delete": {
+        "description": "Endpoint used to delete any type with ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/updatetype/{id}": {
+      "put": {
+        "description": "This Endpoint is used to Update any Type with the ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "section": {
+                  "example": "any"
+                },
+                "active": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/getmodifysubcategorybyid/{id}": {
+      "get": {
+        "description": "Endoint used to get the particular subcategory with ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/getallbookings": {
+      "get": {
+        "description": "Used to display all the bookings done from Website",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/addbooking": {
+      "post": {
+        "description": "Endpoint used to add the booking from the Website",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "type": {
+                  "example": "any"
+                },
+                "departure": {
+                  "example": "any"
+                },
+                "arrival": {
+                  "example": "any"
+                },
+                "passengers": {
+                  "example": "any"
+                },
+                "date": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "phone": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/sorted": {
+      "post": {
+        "description": "Filters the Bookings with the from and to date in admin dashboard",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "from": {
+                  "example": "any"
+                },
+                "to": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/deletebookingbyid/{id}": {
+      "delete": {
+        "description": "Endpoint used to delete the exact booking by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/addenquiry": {
+      "post": {
+        "description": "Endpoint which collects the query from the website",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "enquiryname": {
+                  "example": "any"
+                },
+                "enquiryemail": {
+                  "example": "any"
+                },
+                "enquiryphone": {
+                  "example": "any"
+                },
+                "enquirydate": {
+                  "example": "any"
+                },
+                "enquirytype": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/deleteenquirybyid/{id}": {
+      "delete": {
+        "description": "Delete the Enquiry with ID ",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/getallenquiry": {
+      "get": {
+        "description": "Used to display all the Enquiries done from Website",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/addlogs": {
+      "post": {
+        "description": "Used to collect all the logs of user from Website",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "log": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/getalllogs": {
+      "get": {
+        "description": "Display all the Logs",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/filterbytypeandcategory/{section}/{chartertype}": {
+      "post": {
+        "description": "Endoint used to get the filter the  subcategories  of exact Type and Category",
+        "parameters": [
+          {
+            "name": "section",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chartertype",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}
